@@ -6,12 +6,6 @@ from .gotoh import *
 from .gotoh_local import *
 
 
-def print_table(nested_list):
-  column_widths = [max(len(str(item)) for item in col) for col in zip(*nested_list)]
-  for row in nested_list:
-    print(" | ".join(f"{item:<{width}}" for item, width in zip(row, column_widths)))
-  print("----")
-
 class Alignment:
   @staticmethod
   def needleman_wunsch(seq_1,seq_2,match=1, mismatch=-1, gap=-2):

@@ -2,7 +2,7 @@ def gotoh_local_alignment(seq1, seq2, match_score=1, mismatch_score=-1, gap_open
     n = len(seq1)
     m = len(seq2)
 
-    # Initialize matrices
+
     M = [[0] * (m + 1) for _ in range(n + 1)]
     Ix = [[float('-inf')] * (m + 1) for _ in range(n + 1)]
     Iy = [[float('-inf')] * (m + 1) for _ in range(n + 1)]
@@ -11,32 +11,30 @@ def gotoh_local_alignment(seq1, seq2, match_score=1, mismatch_score=-1, gap_open
     max_score = 0
     max_pos = (0, 0)
 
-    # Fill matrices
+
     for i in range(1, n + 1):
         for j in range(1, m + 1):
             Ix[i][j] = max(Ix[i - 1][j] + gap_extend, M[i - 1][j] + gap_open + gap_extend)
             Iy[i][j] = max(Iy[i][j - 1] + gap_extend, M[i][j - 1] + gap_open + gap_extend)
-            M[i][j] = max(0,  # Local alignment allows resetting to 0
+            M[i][j] = max(0,  
                           M[i - 1][j - 1] + (match_score if seq1[i - 1] == seq2[j - 1] else mismatch_score), 
                           Ix[i][j], 
                           Iy[i][j])
 
-            # Update max score for local alignment
             if M[i][j] > max_score:
                 max_score = M[i][j]
                 max_pos = (i, j)
 
-            # Traceback
+            
             if M[i][j] == 0:
-                traceback[i][j] = None  # Reset alignment
+                traceback[i][j] = None  
             elif M[i][j] == M[i - 1][j - 1] + (match_score if seq1[i - 1] == seq2[j - 1] else mismatch_score):
-                traceback[i][j] = 'D'  # Diagonal
+                traceback[i][j] = 'D'  
             elif M[i][j] == Ix[i][j]:
-                traceback[i][j] = 'U'  # Up
+                traceback[i][j] = 'U'  
             else:
-                traceback[i][j] = 'L'  # Left
+                traceback[i][j] = 'L'  
 
-    # Traceback to get alignment
     aligned_seq1 = []
     aligned_seq2 = []
     i, j = max_pos

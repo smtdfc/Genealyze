@@ -2,7 +2,6 @@ def gotoh_local_alignment(seq1, seq2, match_score=1, mismatch_score=-1, gap_open
     n = len(seq1)
     m = len(seq2)
 
-
     M = [[0] * (m + 1) for _ in range(n + 1)]
     Ix = [[float('-inf')] * (m + 1) for _ in range(n + 1)]
     Iy = [[float('-inf')] * (m + 1) for _ in range(n + 1)]

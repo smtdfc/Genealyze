@@ -1,5 +1,3 @@
-
-
 class Sequence:
   def __init__(self,seq):
     self.seq_str = seq.upper()
@@ -32,4 +30,3 @@ class Sequence:
     seq = self.complement()
     seq.seq_str = seq.seq_str[::-1]
     return seq
-  

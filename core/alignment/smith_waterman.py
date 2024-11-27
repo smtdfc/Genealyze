@@ -1,4 +1,4 @@
-def smith_waterman(seq1, seq2, match=1, mismatch=-1, gap=-2):
+def smith_waterman_alignment(seq1, seq2, match=1, mismatch=-1, gap=-2):
   n = len(seq1)
   m = len(seq2)
 

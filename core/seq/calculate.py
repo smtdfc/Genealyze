@@ -1,5 +1,4 @@
 class SequenceCaculate:
-    
     @staticmethod
     def gc_content(seq):
       seq = seq.seq_str.upper()

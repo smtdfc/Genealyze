@@ -1,4 +1,4 @@
-def gotoh_alignment(seq1, seq2, match_score=1, mismatch_score=-1, gap_open=-2, gap_extend=-1):
+def gotoh_local_alignment(seq1, seq2, match_score=1, mismatch_score=-1, gap_open=-2, gap_extend=-1):
     n = len(seq1)
     m = len(seq2)
 
@@ -8,27 +8,28 @@ def gotoh_alignment(seq1, seq2, match_score=1, mismatch_score=-1, gap_open=-2, g
     Iy = [[float('-inf')] * (m + 1) for _ in range(n + 1)]
     traceback = [[None] * (m + 1) for _ in range(n + 1)]
 
-    # Fill base cases
-    for i in range(1, n + 1):
-        Ix[i][0] = gap_open + (i - 1) * gap_extend
-        M[i][0] = Ix[i][0]
-        traceback[i][0] = 'U'  # Up
-
-    for j in range(1, m + 1):
-        Iy[0][j] = gap_open + (j - 1) * gap_extend
-        M[0][j] = Iy[0][j]
-        traceback[0][j] = 'L'  # Left
+    max_score = 0
+    max_pos = (0, 0)
 
     # Fill matrices
     for i in range(1, n + 1):
         for j in range(1, m + 1):
             Ix[i][j] = max(Ix[i - 1][j] + gap_extend, M[i - 1][j] + gap_open + gap_extend)
             Iy[i][j] = max(Iy[i][j - 1] + gap_extend, M[i][j - 1] + gap_open + gap_extend)
-            M[i][j] = max(M[i - 1][j - 1] + (match_score if seq1[i - 1] == seq2[j - 1] else mismatch_score), 
-                          Ix[i][j], Iy[i][j])
+            M[i][j] = max(0,  # Local alignment allows resetting to 0
+                          M[i - 1][j - 1] + (match_score if seq1[i - 1] == seq2[j - 1] else mismatch_score), 
+                          Ix[i][j], 
+                          Iy[i][j])
+
+            # Update max score for local alignment
+            if M[i][j] > max_score:
+                max_score = M[i][j]
+                max_pos = (i, j)
 
             # Traceback
-            if M[i][j] == M[i - 1][j - 1] + (match_score if seq1[i - 1] == seq2[j - 1] else mismatch_score):
+            if M[i][j] == 0:
+                traceback[i][j] = None  # Reset alignment
+            elif M[i][j] == M[i - 1][j - 1] + (match_score if seq1[i - 1] == seq2[j - 1] else mismatch_score):
                 traceback[i][j] = 'D'  # Diagonal
             elif M[i][j] == Ix[i][j]:
                 traceback[i][j] = 'U'  # Up
@@ -38,9 +39,9 @@ def gotoh_alignment(seq1, seq2, match_score=1, mismatch_score=-1, gap_open=-2, g
     # Traceback to get alignment
     aligned_seq1 = []
     aligned_seq2 = []
-    i, j = n, m
+    i, j = max_pos
 
-    while i > 0 or j > 0:
+    while i > 0 and j > 0 and M[i][j] != 0:
         if traceback[i][j] == 'D':
             aligned_seq1.append(seq1[i - 1])
             aligned_seq2.append(seq2[j - 1])
@@ -58,5 +59,6 @@ def gotoh_alignment(seq1, seq2, match_score=1, mismatch_score=-1, gap_open=-2, g
     aligned_seq1.reverse()
     aligned_seq2.reverse()
 
-    return ''.join(aligned_seq1), ''.join(aligned_seq2), M[n][m]
+    return ''.join(aligned_seq1), ''.join(aligned_seq2), max_score
+
 

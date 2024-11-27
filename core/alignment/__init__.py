@@ -11,12 +11,11 @@ class Alignment:
   def needleman_wunsch(seq_1,seq_2,match=1, mismatch=-1, gap=-2):
     seq_str_1 = seq_1.seq_str
     seq_str_2 = seq_2.seq_str
-    seq_aligned_1,seq_aligned_2,max_score, scores= needleman_wunsch_alignment(seq_str_1,seq_str_2,match, mismatch, gap)
+    seq_aligned_1,seq_aligned_2,max_score= needleman_wunsch_alignment(seq_str_1,seq_str_2,match, mismatch, gap)
     return (
       Sequence(seq_aligned_1),
       Sequence(seq_aligned_2),
       max_score,
-      scores
     )
     
   @staticmethod

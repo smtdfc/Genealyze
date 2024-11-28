@@ -1,41 +1,42 @@
-def smith_waterman_alignment(seq1, seq2, match=1, mismatch=-1, gap=-2):
-  n = len(seq1)
-  m = len(seq2)
+def smith_waterman_alignment(seq_1, seq_2, match=1, mismatch=-1, gap=-2):
+    def diagonal(i, j):
+      return match if seq_1[i-1] == seq_2[j-1] else mismatch
+    
+    n = len(seq_1)
+    m = len(seq_2)
+    
+    F = [[0] * (m + 1) for _ in range(n + 1)]
+    max_score = 0
+    max_score_pos = (0,0)
+    
+    for i in range(1,n):
+      for j in range(1,m):
+        match_score = F[i-1][j-1] + diagonal(i, j)
+        delete_score = F[i-1][j] + gap
+        insert_score = F[i][j-1] + gap
+        F[i][j] = max(match_score, delete_score, insert_score,0)
+        
+        if F[i][j] > max_score:
+          max_score = F[i][j]
+          max_score_pos=(i,j)
+    
+    seq_align_1 = ""
+    seq_align_2 = ""
+    i, j = max_score_pos
+    
+    while F[i][j] > 0:
+        if i > 0 and j > 0 and F[i][j] == F[i-1][j-1] + diagonal(i, j):
+            seq_align_1 = seq_1[i-1] + seq_align_1
+            seq_align_2 = seq_2[j-1] + seq_align_2
+            i -= 1
+            j -= 1
+        elif i > 0 and F[i][j] == F[i-1][j] + gap:
+            seq_align_1 = seq_1[i-1] + seq_align_1
+            seq_align_2 = "_" + seq_align_2
+            i -= 1
+        else:
+            seq_align_1 = "_" + seq_align_1
+            seq_align_2 = seq_2[j-1] + seq_align_2
+            j -= 1
+    return seq_align_1,seq_align_2,max_score
 
-  dp = [[0] * (m + 1) for _ in range(n + 1)]
-  max_score = 0
-  max_pos = (0, 0)
-
-  for i in range(1, n + 1):
-    for j in range(1, m + 1):
-      match_score = match if seq1[i - 1] == seq2[j - 1] else mismatch
-      dp[i][j] = max(
-        0,
-        dp[i - 1][j - 1] + match_score,
-        dp[i - 1][j] + gap,
-        dp[i][j - 1] + gap
-      )
-      if dp[i][j] > max_score:
-        max_score = dp[i][j]
-        max_pos = (i, j)
-
-  aligned_seq1 = []
-  aligned_seq2 = []
-  i, j = max_pos
-  while i > 0 and j > 0 and dp[i][j] > 0:
-    match_score = match if seq1[i - 1] == seq2[j - 1] else mismatch
-    if dp[i][j] == dp[i - 1][j - 1] + match_score:
-      aligned_seq1.append(seq1[i - 1])
-      aligned_seq2.append(seq2[j - 1])
-      i -= 1
-      j -= 1
-    elif dp[i][j] == dp[i - 1][j] + gap:
-      aligned_seq1.append(seq1[i - 1])
-      aligned_seq2.append('-')
-      i -= 1
-    else:
-      aligned_seq1.append('-')
-      aligned_seq2.append(seq2[j - 1])
-      j -= 1
-
-  return ''.join(reversed(aligned_seq1)), ''.join(reversed(aligned_seq2)), max_score,dp

@@ -1,12 +1,11 @@
-def needleman_wunsch_alignment(seq_1, seq_2, match=1, dismatch=-1, gap=-1):
+def needleman_wunsch_alignment(seq_1, seq_2, match=1, mismatch=-1, gap=-1):
     def diagonal(i, j):
-        return match if seq_1[i-1] == seq_2[j-1] else dismatch
+        return match if seq_1[i-1] == seq_2[j-1] else mismatch
     
     n = len(seq_1)
     m = len(seq_2)
     
     F = [[0] * (m + 1) for _ in range(n + 1)]
-    D = [[0] * (m + 1) for _ in range(n + 1)]
     
     for i in range(n + 1):
         F[i][0] = gap * i

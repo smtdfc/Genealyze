@@ -1,6 +1,27 @@
+from .transcription import *
+from .translation import *
+
 class ReadingFrameGroup:
   def __init__(self,frames=[]):
     self.frames = []
+
+  def get(self,index):
+    return self.frames[index]
+    
+  def transcribe(self):
+    sequences = []
+    for seq in self.frames:
+      sequences.append(transcribe(seq))
+    
+    return sequences
+
+  def translate(self,*args):
+    sequences = []
+    for seq in self.frames:
+      sequences.append(translate(seq,*args))
+    
+    return sequences
+  
 
 class ReadingFrame:
   @staticmethod

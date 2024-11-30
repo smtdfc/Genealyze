@@ -90,6 +90,6 @@ class Translation:
     
     return Sequence(seq_str)
     
-def translate(sequence):
-  return Translation(sequence).translate()
+def translate(sequence,*args):
+  return Translation(sequence).translate(*args)
   

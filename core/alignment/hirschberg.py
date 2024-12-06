@@ -1,4 +1,22 @@
 def hirschberg_alignment(seq_1, seq_2, match=1, mismatch=-1, gap=-2):
+    """
+    Perform global sequence alignment using the Hirschberg algorithm.
+
+    The Hirschberg algorithm is a space-efficient version of the Needleman-Wunsch
+    algorithm that divides the alignment problem into smaller subproblems, recursively
+    solving them for an optimal global alignment.
+
+    Parameters:
+    - seq_1 (str): The first sequence to be aligned.
+    - seq_2 (str): The second sequence to be aligned.
+    - match (int): The score for matching nucleotides (default is 1).
+    - mismatch (int): The penalty for mismatching nucleotides (default is -1).
+    - gap (int): The penalty for introducing a gap (default is -2).
+
+    Returns:
+    - tuple: A tuple containing two aligned sequences (str) with gaps ('_') inserted, 
+             representing the optimal global alignment.
+    """
     def diagonal(a, b):
         return match if a == b else mismatch
 

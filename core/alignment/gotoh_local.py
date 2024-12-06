@@ -1,4 +1,29 @@
 def gotoh_local_alignment(seq1, seq2, match_score=1, mismatch_score=-1, gap_open=-2, gap_extend=-1):
+    """
+    Perform local sequence alignment using the Gotoh algorithm with affine gap penalties.
+
+    This function finds the optimal local alignment between two sequences using 
+    dynamic programming with affine gap penalties (gap opening and gap extension penalties).
+    It returns the best local alignment score along with the aligned sequences.
+
+    Parameters:
+    - seq1 (str): The first sequence to be aligned.
+    - seq2 (str): The second sequence to be aligned.
+    - match_score (int): The score for matching characters (default is 1).
+    - mismatch_score (int): The penalty for mismatching characters (default is -1).
+    - gap_open (int): The penalty for opening a gap (default is -2).
+    - gap_extend (int): The penalty for extending a gap (default is -1).
+
+    Returns:
+    - tuple: A tuple containing three values:
+      - Aligned sequence 1 (str) with gaps ('-') inserted.
+      - Aligned sequence 2 (str) with gaps ('-') inserted.
+      - The maximum local alignment score (int), representing the highest scoring local alignment.
+
+    This function uses dynamic programming to calculate the local alignment matrix and traceback 
+    to reconstruct the aligned sequences. The traceback starts from the position of the highest 
+    scoring local alignment, and continues until it reaches a score of 0.
+    """
     n = len(seq1)
     m = len(seq2)
 
@@ -57,5 +82,3 @@ def gotoh_local_alignment(seq1, seq2, match_score=1, mismatch_score=-1, gap_open
     aligned_seq2.reverse()
 
     return ''.join(aligned_seq1), ''.join(aligned_seq2), max_score
-
-

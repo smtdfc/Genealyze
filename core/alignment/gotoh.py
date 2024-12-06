@@ -1,4 +1,28 @@
 def gotoh_alignment(seq1, seq2, match_score=1, mismatch_score=-1, gap_open=-2, gap_extend=-1):
+    """
+    Perform global sequence alignment using the Gotoh algorithm with affine gap penalties.
+
+    The Gotoh algorithm is an extension of the Needleman-Wunsch algorithm that handles 
+    affine gap penalties, which separate gap opening and gap extension penalties. 
+    It provides a more accurate alignment for sequences with gaps.
+
+    Parameters:
+    - seq1 (str): The first sequence to be aligned.
+    - seq2 (str): The second sequence to be aligned.
+    - match_score (int): The score for matching characters (default is 1).
+    - mismatch_score (int): The penalty for mismatching characters (default is -1).
+    - gap_open (int): The penalty for opening a gap (default is -2).
+    - gap_extend (int): The penalty for extending a gap (default is -1).
+
+    Returns:
+    - tuple: A tuple containing three values:
+      - Aligned sequence 1 (str) with gaps ('-') inserted.
+      - Aligned sequence 2 (str) with gaps ('-') inserted.
+      - The alignment score (int), which is the value of M[n][m] representing the best alignment score.
+
+    The function uses dynamic programming to calculate the optimal alignment and traceback to 
+    reconstruct the aligned sequences.
+    """
     n = len(seq1)
     m = len(seq2)
 
@@ -55,4 +79,3 @@ def gotoh_alignment(seq1, seq2, match_score=1, mismatch_score=-1, gap_open=-2, g
     aligned_seq2.reverse()
 
     return ''.join(aligned_seq1), ''.join(aligned_seq2), M[n][m]
-

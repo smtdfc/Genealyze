@@ -18,6 +18,9 @@ class SequenceCaculate:
         sequence_identity(seq1, seq2): Calculates the percentage identity between two sequences.
         hamming_distance(seq1, seq2): Computes the Hamming distance between two sequences.
         gc_content(seq): Calculates the GC content of a sequence, accounting for ambiguous bases.
+        tm_wallace_rule(seq): Calculate melting temperature (Tₘ) using Wallace rule.
+        tm_marmur_doty(seq): Calculate melting temperature (Tₘ) using Marmur-Doty formula.
+        tm_santalucia(seq): Calculate melting temperature (Tₘ) using SantaLucia formula.
     """
 
     @staticmethod
@@ -225,3 +228,5 @@ class SequenceCaculate:
         tm_kelvin = total_enthalpy / (total_entropy + R * math.log(dna_concentration_effective))
         tm_celsius = tm_kelvin - 273.15
         return tm_celsius
+    
+    @staticmethod

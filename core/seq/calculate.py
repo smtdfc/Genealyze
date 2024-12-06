@@ -1,3 +1,4 @@
+from collections import Counter
 import math
 
 hydropathy_index = {
@@ -21,6 +22,7 @@ class SequenceCaculate:
         tm_wallace_rule(seq): Calculate melting temperature (Tₘ) using Wallace rule.
         tm_marmur_doty(seq): Calculate melting temperature (Tₘ) using Marmur-Doty formula.
         tm_santalucia(seq): Calculate melting temperature (Tₘ) using SantaLucia formula.
+        calculate_entropy(seq): Calculate the entropy of a DNA or protein sequence.
     """
 
     @staticmethod
@@ -230,3 +232,24 @@ class SequenceCaculate:
         return tm_celsius
     
     @staticmethod
+    def calculate_entropy(sequence):
+        """
+        Calculate the entropy of a DNA or protein sequence.
+        
+        Parameters:
+        sequence (Sequence): The input sequence (e.g., "AGCTAGCT").
+        
+        Returns:
+        float: The entropy of the sequence.
+        """
+        sequence = sequence.seq_str
+        if not sequence:
+            raise ValueError("The sequence must not be empty.")
+        
+        frequency = Counter(sequence)
+        total_length = len(sequence)
+        probabilities = [freq / total_length for freq in frequency.values()]
+        entropy = -sum(p * math.log2(p) for p in probabilities)
+        
+        return entropy
+

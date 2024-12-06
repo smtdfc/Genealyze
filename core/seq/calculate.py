@@ -1,3 +1,5 @@
+import math
+
 hydropathy_index = {
       'A': 1.8, 'R': -4.5, 'N': -3.5, 'D': -3.5, 'C': 2.5, 'Q': -3.5, 'E': -3.5,
       'G': -0.4, 'H': -3.2, 'I': 4.5, 'L': 3.8, 'K': -3.9, 'M': 1.9, 'F': 2.8,
@@ -144,3 +146,82 @@ class SequenceCaculate:
                 return 0.0
         gc_percentage = (gc_count / valid_length) * 100
         return gc_percentage
+    
+    @staticmethod
+    def tm_wallace_rule(sequence):
+        """
+        Calculate melting temperature (Tₘ) using Wallace rule.
+        
+        Parameters:
+        sequence (Sequence): DNA sequence.
+        
+        Returns:
+        float: Melting temperature (Tₘ) in Celsius.
+        """
+        sequence = sequence.seq_str.upper()
+        A_count = sequence.count("A")
+        T_count = sequence.count("T")
+        G_count = sequence.count("G")
+        C_count = sequence.count("C")
+        return 2 * (A_count + T_count) + 4 * (G_count + C_count)
+    
+    @staticmethod
+    def tm_marmur_doty(sequence, na_concentration):
+        """
+        Calculate melting temperature (Tₘ) using Marmur-Doty formula.
+        
+        Parameters:
+        sequence (Sequence): DNA sequence.
+        na_concentration (float): Sodium ion concentration (mol/L).
+        
+        Returns:
+        float: Melting temperature (Tₘ) in Celsius.
+        """
+        sequence = sequence.seq_str.upper()
+        G_count = sequence.count("G")
+        C_count = sequence.count("C")
+        GC_content = (G_count + C_count) / len(sequence) * 100
+        length = len(sequence)
+        return 81.5 + 16.6 * math.log10(na_concentration) + 0.41 * GC_content - (500 / length)
+    
+    @staticmethod
+    def tm_santalucia(sequence, dna_concentration, na_concentration):
+        """
+        Calculate melting temperature (Tₘ) using SantaLucia formula.
+        
+        Parameters:
+        sequence (Sequence): DNA sequence.
+        dna_concentration (float): DNA concentration (mol/L).
+        na_concentration (float): Sodium ion concentration (mol/L).
+        
+        Returns:
+        float: Melting temperature (Tₘ) in Celsius.
+        """
+        nearest_neighbor_params = {
+            "AA": (-7.6, -21.3), "TT": (-7.6, -21.3),
+            "AT": (-7.2, -20.4), "TA": (-7.2, -21.3),
+            "CA": (-8.5, -22.7), "TG": (-8.5, -22.7),
+            "GT": (-8.4, -22.4), "AC": (-8.4, -22.4),
+            "CT": (-7.8, -21.0), "AG": (-7.8, -21.0),
+            "GA": (-8.2, -22.2), "TC": (-8.2, -22.2),
+            "CG": (-10.6, -27.2), "GC": (-9.8, -24.4),
+            "GG": (-8.0, -19.9), "CC": (-8.0, -19.9),
+        }
+        
+        sequence = sequence.seq_str.upper()
+        R = 1.987  # Universal gas constant in cal/(mol·K)
+        total_enthalpy = 0.0
+        total_entropy = 0.0
+    
+        for i in range(len(sequence) - 1):
+            pair = sequence[i:i + 2]
+            if pair in nearest_neighbor_params:
+                enthalpy, entropy = nearest_neighbor_params[pair]
+                total_enthalpy += enthalpy
+                total_entropy += entropy
+    
+        total_entropy += 0.368 * len(sequence) * math.log(na_concentration)
+        dna_concentration_effective = dna_concentration / 4  # Adjust for duplex formation
+        tm_kelvin = total_enthalpy / (total_entropy + R * math.log(dna_concentration_effective))
+        tm_celsius = tm_kelvin - 273.15
+        return tm_celsius

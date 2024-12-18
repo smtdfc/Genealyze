@@ -29,6 +29,17 @@ class ProjectAnnotation:
 
 class ProjectManage:
     @staticmethod
+    def get_project(location):
+        with open(f'{location}/project.json', 'r') as file:
+            data = json.load(file)
+        
+        return ProjectAnnotation(
+            name=data["project"],
+            root_path=location,
+            sequences_path=data["sequence_dir"]
+        )
+    
+    @staticmethod
     def create_project(name, location):
         source_folder = "data/template"
         project_path = f'{location}/{name}'

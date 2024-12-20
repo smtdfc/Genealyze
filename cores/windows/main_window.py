@@ -4,6 +4,8 @@ from tkinter import messagebox
 from .create_project_window import *
 from .project_edit_window import * 
 
+
+
 class MainWindow:
     def __init__(self):
         self.current_project = None
@@ -41,5 +43,5 @@ class MainWindow:
         folder_selected = filedialog.askdirectory()
         if folder_selected:
             ProjectEditWindow(
-              ProjectManage.get_project(folder_selected)
+              ProjectManageService.get_project(folder_selected)
             )

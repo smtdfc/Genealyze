@@ -8,7 +8,7 @@ import time
 
 class CreateProjectWindow:
     def __init__(self):
-        self.win = Tk()
+        self.win = Toplevel()
         self.win.title("Create New Project | Genealyze")
         self.win.geometry("1244x367")
         self.win.grid_rowconfigure(0, weight=1)
@@ -55,7 +55,7 @@ class CreateProjectWindow:
         if project_name and hasattr(self, 'selected_location'):
             self.win.destroy()
             win = StatusWindow("Creating project ...")
-            self.project = ProjectManage.create_project(project_name,self.selected_location)
+            self.project = ProjectManageService.create_project(project_name,self.selected_location)
             win.close()
             self.on_created(self.project)
         else:

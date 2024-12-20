@@ -3,7 +3,7 @@ from tkinter.ttk import Progressbar
 
 class StatusWindow:
     def __init__(self, title="Status Window"):
-        self.root = Tk()
+        self.root = Toplevel()
         self.root.overrideredirect(True)
 
         self.status_label = Label(self.root, text=title, width=40, height=2)

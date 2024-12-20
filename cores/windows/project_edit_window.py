@@ -1,7 +1,9 @@
 from tkinter import *
+from tkinter.ttk import *
 from tkinter import simpledialog
 from tkinter import messagebox
 from tkinter import filedialog
+from cores.components.project_view import *
 from cores.services import *
 from .create_project_window import CreateProjectWindow
 
@@ -9,7 +11,7 @@ from .create_project_window import CreateProjectWindow
 class ProjectEditWindow:
     def __init__(self, project):
         self.current_project = project
-        self.win = Tk()
+        self.win = Toplevel()
         self.win.geometry("1000x600")
         self.win.title(f"{project.name} | Project editor | Genealyze")
         self.menu = Menu(self.win)
@@ -22,6 +24,10 @@ class ProjectEditWindow:
         file_menu.add_command(label="Quit",command=self.on_quit_click)
         file_menu.add_separator()
 
+        self.project_view = ProjectView(self.win)
+        self.project_view.treeview.grid(row=0,column=0,ipadx=50)
+        
+        
     def on_quit_click(self):
         self.win.destroy()
     
@@ -33,5 +39,5 @@ class ProjectEditWindow:
         folder_selected = filedialog.askdirectory()
         if folder_selected:
             ProjectEditWindow(
-              ProjectManage.get_project(folder_selected)
+              ProjectManageService.get_project(folder_selected)
             )
